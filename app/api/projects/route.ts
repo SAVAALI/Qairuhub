@@ -1,10 +1,36 @@
 import { NextResponse } from "next/server";
-import { createProject, getProjects } from "@/lib/projects";
+import { cookies } from "next/headers";
+import { createClient } from "@/utils/supabase/server";
+import type { Project } from "@/lib/types";
 
-export const runtime = "nodejs";
+type ProjectRow = {
+  id: string;
+  title: string;
+  description: string;
+  tech_stack: string[];
+  contact: string;
+  created_at: string;
+};
+
+const toProject = (row: ProjectRow): Project => ({
+  id: row.id,
+  title: row.title,
+  description: row.description,
+  techStack: row.tech_stack,
+  contact: row.contact,
+  createdAt: row.created_at,
+});
 
 export async function GET() {
-  return NextResponse.json(await getProjects());
+  try {
+    const supabase = createClient(cookies());
+    const { data, error } = await supabase.from("projects").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    return NextResponse.json((data as ProjectRow[]).map(toProject));
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Не удалось загрузить проекты." }, { status: 500 });
+  }
 }
 
 export async function POST(request: Request) {
@@ -22,6 +48,18 @@ export async function POST(request: Request) {
   if (title.length > 100 || description.length > 700 || contact.length > 250) {
     return NextResponse.json({ message: "One of the fields is too long." }, { status: 400 });
   }
-  const project = await createProject({ title, description, contact, techStack });
-  return NextResponse.json(project, { status: 201 });
+  try {
+    // Supabase persists the idea in Postgres; no filesystem writes occur on Vercel.
+    const supabase = createClient(cookies());
+    const { data, error } = await supabase
+      .from("projects")
+      .insert({ title, description, contact, tech_stack: techStack })
+      .select()
+      .single();
+    if (error) throw error;
+    return NextResponse.json(toProject(data as ProjectRow), { status: 201 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ message: "Не удалось опубликовать идею. Проверьте подключение к базе данных." }, { status: 500 });
+  }
 }

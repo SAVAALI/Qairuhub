@@ -29,7 +29,7 @@ export function IdeaModal({ open, onClose, onCreated }: Props) {
     setError(""); setSaving(true);
     try {
       const response = await fetch("/api/projects", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title, description, contact, techStack: tags }) });
-      const payload = await response.json();
+      const payload = await response.json().catch(() => ({ message: "Сервер вернул некорректный ответ." }));
       if (!response.ok) throw new Error(payload.message || "Could not publish your idea.");
       onCreated(payload); setTitle(""); setDescription(""); setContact(""); setTags([]); onClose();
     } catch (err) { setError(err instanceof Error ? err.message : "Something went wrong."); }
