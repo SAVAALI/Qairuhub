@@ -1,0 +1,12 @@
+# Зависимости
+node_modules/
+
+# Сборка Next.js
+.next/
+out/
+
+# Системные файлы и кэш
+.DS_Store
+*.log
+.env
+.env.local

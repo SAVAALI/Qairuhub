@@ -1,0 +1,26 @@
+[
+  {
+    "id": "campus-route",
+    "title": "Campus Route",
+    "description": "Interactive campus navigator that finds accessible routes, quiet study corners, and available facilities in real time.",
+    "techStack": ["React", "TypeScript", "Maps"],
+    "contact": "https://t.me/qairu_campus",
+    "createdAt": "2026-09-15T09:00:00.000Z"
+  },
+  {
+    "id": "study-buddy",
+    "title": "Study Buddy AI",
+    "description": "A focused study assistant that converts lectures into quizzes and adapts revision plans to each student.",
+    "techStack": ["Python", "ML", "FastAPI"],
+    "contact": "https://t.me/qairu_study",
+    "createdAt": "2026-09-14T09:00:00.000Z"
+  },
+  {
+    "id": "green-bites",
+    "title": "Green Bites",
+    "description": "A marketplace for discounted end-of-day food from local cafes, with impact tracking for student communities.",
+    "techStack": ["Figma", "React", "Node.js"],
+    "contact": "https://t.me/qairu_green",
+    "createdAt": "2026-09-12T09:00:00.000Z"
+  }
+]
